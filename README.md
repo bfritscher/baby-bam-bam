@@ -26,4 +26,4 @@ No dependencies (outside of Google Fonts) only vanilla html/css/javascript.
 - https://freeanimalsounds.org/
 - https://www.freesoundslibrary.com/
 - https://freepik.com
-- Logo Icon adapted from Simon Mettler from [https://thenounproject.com/](the Noun Project)
+- Logo Icon adapted from Simon Mettler from [the Noun Project](https://thenounproject.com/)
