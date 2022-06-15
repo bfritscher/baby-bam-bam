@@ -35,6 +35,7 @@ class Options {
   imageCollections = ["animal-alphabet-en", "numbers"];
   drawingEnabled = true;
   clicklessDrawing = false;
+  drawingLineWidth = 30;
   playAudio = true;
   ttsEnabled = true;
   ttsLang = "";
@@ -189,7 +190,7 @@ class CanasDraw {
     if (!this.options.drawingEnabled) return;
     const ctx = this.ctx;
     ctx.beginPath();
-    ctx.lineWidth = 10;
+    ctx.lineWidth = this.options.drawingLineWidth;
     ctx.lineCap = "round";
     ctx.strokeStyle = `hsl(${
       ((new Date().getTime() - this.START_TIME) / 10) % 360
