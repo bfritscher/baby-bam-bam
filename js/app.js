@@ -1,0 +1,507 @@
+const COLORS = ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"];
+const FADE_TIME_MS = 2000; // must match .fade-out
+
+function randomItem(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function randomColor() {
+  return COLORS[Math.floor(Math.random() * COLORS.length)];
+}
+
+function randomWindowXY() {
+  return {
+    x: Math.floor(Math.random() * window.innerWidth),
+    y: Math.floor(Math.random() * window.innerHeight)
+  };
+}
+
+const ALPHANUM = new RegExp("^[a-zA-Z0-9]$");
+
+const LOCALSTORAGE_KEY = "baby_bambam";
+const LETTER_MODE_LETTER = "letter";
+const LETTER_MODE_IMAGE = "image";
+
+class Options {
+  fadeAway = true;
+  fadeAfter = 3; // seconds
+  limitItems = true;
+  maxItems = 30; // count
+  animateOnClick = true;
+  forceUpperCase = true;
+  fontFamily = "Roboto";
+  letterMode = LETTER_MODE_IMAGE;
+  onlyAlphaNum = false;
+  imageCollections = ["animal-alphabet-en", "numbers"];
+  drawingEnabled = true;
+  clicklessDrawing = false;
+  playAudio = true;
+  ttsEnabled = true;
+  ttsLang = "";
+  constructor() {
+    this.load();
+    this.setupFont();
+  }
+  load() {
+    try {
+      const savedOptions = JSON.parse(
+        localStorage.getItem(LOCALSTORAGE_KEY) || "{}"
+      );
+      Object.keys(savedOptions).forEach((key) => {
+        if (this.hasOwnProperty(key)) {
+          this[key] = savedOptions[key];
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  save() {
+    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(this));
+  }
+  setupFont() {
+    const fontLink = document.createElement("link");
+    fontLink.href = `https://fonts.googleapis.com/css2?family=${this.fontFamily.replace(
+      / /g,
+      "+"
+    )}&display=swap`;
+    fontLink.rel = "stylesheet";
+    document.head.append(fontLink);
+  }
+}
+
+class OptionsDialog {
+  dialog;
+  formElements = {};
+  constructor(options) {
+    this.dialog = document.getElementById("optionsDialog");
+    // connect dom
+    [...this.dialog.querySelectorAll("[name]")].forEach((formEl) => {
+      this.formElements[formEl.name] = formEl;
+      if (formEl.type === "checkbox") {
+        formEl.checked = options[formEl.name];
+        formEl.addEventListener("change", () => {
+          options[formEl.name] = formEl.checked;
+          options.save();
+          if (formEl.name === "clicklessDrawing") {
+            formEl.checked ? app.canvas.start() : app.canvas.stop();
+          }
+        });
+      } else if (formEl.name === "imageCollections") {
+        formEl.addEventListener("change", () => {
+          options[formEl.name] = [...formEl.selectedOptions].map(
+            (option) => option.value
+          );
+          options.save();
+          app.setupCollections();
+        });
+      } else {
+        formEl.value = options[formEl.name];
+        formEl.addEventListener("change", () => {
+          options[formEl.name] =
+            typeof options[formEl.name] === "number"
+              ? Number(formEl.value)
+              : formEl.value;
+          if (formEl.name === "fontFamily") {
+            options.setupFont();
+          }
+          options.save();
+        });
+      }
+    });
+    const optionsDialogClose = document.getElementById("optionsDialogClose");
+    optionsDialogClose.addEventListener("click", () => this.close());
+    const fullscreenButton = document.getElementById("fullscreenButton");
+    fullscreenButton.addEventListener("click", () => {
+      app.toggleFullscreen();
+      fullscreenButton.textContent = document.fullscreen
+        ? "Fullscreen"
+        : "EXIT";
+    });
+    // If a browser doesn't support the dialog, then hide the
+    // dialog contents by default.
+    if (typeof this.dialog.showModal !== "function") {
+      this.dialog.hidden = true;
+    }
+  }
+  _captureEsc(e) {
+    e.preventDefault();
+  }
+  show() {
+    this.dialog.addEventListener("cancel", this._captureEsc);
+    this.dialog.showModal();
+  }
+  close() {
+    this.dialog.close();
+    this.dialog.removeEventListener("cancel", this._captureEsc);
+  }
+}
+
+class CanasDraw {
+  START_TIME;
+  canvas;
+  ctx;
+  coord = { x: 0, y: 0 };
+  options;
+  refDraw;
+
+  constructor(options) {
+    this.options = options;
+    this.START_TIME = new Date().getTime();
+    this.canvas = document.getElementById("canvas");
+    this.ctx = this.canvas.getContext("2d");
+    // TODO: pointer events for touch support?
+    this.canvas.addEventListener("mousedown", this.start.bind(this));
+    this.canvas.addEventListener("mouseup", this.stop.bind(this));
+    window.addEventListener("resize", this.resize.bind(this));
+    this.resize();
+    this.fadeOut();
+    if (this.options.clicklessDrawing) {
+      this.start();
+    }
+  }
+  resize() {
+    this.ctx.canvas.width = window.innerWidth;
+    this.ctx.canvas.height = window.innerHeight;
+  }
+  reposition(event) {
+    this.coord.x = event.clientX - this.canvas.offsetLeft;
+    this.coord.y = event.clientY - this.canvas.offsetTop;
+  }
+
+  start(event) {
+    if (this.refDraw) {
+      this.canvas.removeEventListener("mousemove", this.refDraw);
+    }
+    this.canvas.addEventListener(
+      "mousemove",
+      (this.refDraw = this.draw.bind(this))
+    );
+    this.reposition(event);
+  }
+  stop() {
+    if (!this.options.clicklessDrawing) {
+      this.canvas.removeEventListener("mousemove", this.refDraw);
+    }
+  }
+  // TODO alternative? save points and redraw with fade
+  draw(event) {
+    if (!this.options.drawingEnabled) return;
+    const ctx = this.ctx;
+    ctx.beginPath();
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = `hsl(${
+      ((new Date().getTime() - this.START_TIME) / 10) % 360
+    } 100% 50%)`;
+    ctx.moveTo(this.coord.x, this.coord.y);
+    this.reposition(event);
+    ctx.lineTo(this.coord.x, this.coord.y);
+    ctx.stroke();
+  }
+
+  fadeOut() {
+    const ctx = this.ctx;
+    ctx.fillStyle = "rgba(255,255,255,0.2)";
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    setTimeout(this.fadeOut.bind(this), 100);
+  }
+}
+
+class MainApp {
+  options;
+  optionsDialog;
+  canvas;
+  drawables = [];
+  images = [];
+  audios = [];
+  collections = {};
+
+  constructor() {
+    this.options = new Options();
+    this.optionsDialog = new OptionsDialog(this.options);
+    setTimeout(() => {
+      this.canvas = new CanasDraw(this.options);
+    });
+    this.loadCollectionsIndex();
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.repeat || this.optionsDialog.dialog.open) return;
+        if (
+          event.ctrlKey &&
+          event.shiftKey &&
+          event.altKey &&
+          event.key === "O"
+        ) {
+          this.optionsDialog.show();
+          return;
+        }
+        if (
+          this.options.letterMode === LETTER_MODE_LETTER &&
+          event.key.match(ALPHANUM)
+        ) {
+          const text = this.options.forceUpperCase
+            ? event.key.toLocaleUpperCase()
+            : event.key;
+          this.addDrawable(new StringDrawable(text));
+        } else {
+          let list = this.images;
+          if (
+            this.options.letterMode === LETTER_MODE_IMAGE &&
+            event.key.match(ALPHANUM)
+          ) {
+            // try to find an image starting with letter
+            const candidates = this.images.filter(
+              (img) => img.name.toUpperCase()[0] === event.key.toUpperCase()
+            );
+            if (candidates.length > 0) {
+              list = candidates;
+            }
+          } else if (this.options.onlyAlphaNum) {
+            return;
+          }
+          if (list.length > 0) {
+            this.addDrawable(new ImageDrawable(randomItem(list)));
+          } else {
+            this.addDrawable(new StringDrawable("No Images"));
+          }
+        }
+      },
+      false
+    );
+  }
+  loadCollectionsIndex() {
+    fetch("assets/collections.json")
+      .then((r) => r.json())
+      .then((data) => {
+        this.collections = data;
+        this.setupCollections();
+        this.optionsDialog.show();
+      });
+  }
+
+  addDrawable(drawable) {
+    this.drawables.push(drawable);
+    if (
+      this.options.limitItems &&
+      this.drawables.length > this.options.maxItems
+    ) {
+      this.drawables.shift().destroy();
+    }
+  }
+  setupCollections() {
+    this.images = [];
+    const imageCollectionsEl = document.getElementById("imageCollections");
+    let child = imageCollectionsEl.lastElementChild;
+    while (child) {
+      imageCollectionsEl.removeChild(child);
+      child = imageCollectionsEl.lastElementChild;
+    }
+    Object.keys(this.collections).forEach((key) => {
+      // add dropdown
+      const option = document.createElement("option");
+      option.value = key;
+      option.selected = this.options.imageCollections.includes(key);
+      option.innerText = this.collections[key].name;
+      imageCollectionsEl.append(option);
+      // load data
+      if (option.selected) {
+        this.setupCollection(this.collections[key]);
+      }
+    });
+  }
+  setupCollection(collectionRef) {
+    fetch(collectionRef.url)
+      .then((r) => r.json())
+      .then((collection) => {
+        const imagepreload = document.getElementById("imagepreload");
+        collection.images.forEach((o) => {
+          const img = document.createElement("img");
+          img.src = o.src;
+          img.setAttribute("name", o.name);
+          imagepreload.append(img);
+          if (o.audio) {
+            o.audioObj = new Audio(o.audio);
+            //TODO preload wait audioElement.addEventListener('loadeddata', () => {
+          }
+          this.images.push(o);
+        });
+      })
+      .catch(() => {
+        console.log("Unable to load collection:", collectionRef);
+      });
+  }
+  async toggleFullscreen() {
+    if (window.self !== window.top) {
+      window.open(window.location.href, "", "noopener,noreferrer");
+      return;
+    }
+    try {
+      if (!document.fullscreen) {
+        await document.documentElement.requestFullscreen();
+        if ("keyboard" in navigator) {
+          await navigator.keyboard.lock();
+        }
+        // FIX bug with canvas being over dialog after switching to fullscreen
+        this.optionsDialog.close();
+        this.optionsDialog.show();
+        return;
+      }
+      if ("keyboard" in navigator) {
+        navigator.keyboard.unlock();
+      }
+      await document.exitFullscreen();
+    } catch (err) {
+      alert(`${err.name}: ${err.message}`);
+    }
+  }
+}
+
+class Drawable {
+  x = 0;
+  y = 0;
+  width = 200;
+  height = 200;
+  constructor() {
+    const { x, y } = randomWindowXY();
+    this.x = x;
+    this.y = y;
+  }
+  setup() {
+    this.el = document.createElement("div");
+    this.el.classList.add("drawable");
+    this.el.classList.add("animate-in");
+    document.body.append(this.el);
+    if (app.options.fadeAway) {
+      setTimeout(() => {
+        this.el.classList.add("fade-out");
+        setTimeout(() => {
+          this.destroy();
+        }, FADE_TIME_MS);
+      }, app.options.fadeAfter * 1000);
+    }
+    this.el.onclick = () => {
+      if (!app.options.animateOnClick) return;
+      this.el.classList.remove("jello");
+      setTimeout(() => {
+        this.el.classList.add("jello");
+      });
+    };
+  }
+  update() {
+    this.el.style.width = `${this.width}px`;
+    this.el.style.height = `${this.height}px`;
+    // padding width
+    this.el.style.left = `${Math.min(
+      this.x,
+      window.innerWidth - this.width
+    )}px`;
+    this.el.style.top = `${Math.min(
+      this.y,
+      window.innerHeight - this.height
+    )}px`;
+  }
+  speak(text) {
+    if (!app.options.ttsEnabled) return;
+    const msg = new SpeechSynthesisUtterance();
+    if (app.options.ttsLang) {
+      msg.lang = app.options.ttsLang;
+    }
+    msg.text = text;
+    window.speechSynthesis.speak(msg);
+  }
+  destroy() {
+    this.el.remove();
+  }
+}
+
+class ImageDrawable extends Drawable {
+  image;
+  audio;
+  constructor(image) {
+    super();
+    this.image = image;
+    this.setup();
+    this.update();
+  }
+  setup() {
+    super.setup();
+    this.el.classList.add("drawable-image");
+
+    this.speak(this.image.name);
+
+    if (this.image.audio && app.options.playAudio) {
+      this.audio = new Audio(this.image.audio);
+      this.audio.play();
+    }
+  }
+  update() {
+    super.update();
+    this.el.style.backgroundImage = `url(${this.image.src})`;
+  }
+  destroy() {
+    super.destroy();
+    if (this.audio) {
+      delete this.audio;
+    }
+  }
+}
+
+class StringDrawable extends Drawable {
+  fontFamily;
+  fontSize = "100px";
+  text = "";
+  color = "#000";
+  constructor(text) {
+    super();
+    this.text = text;
+    this.color = randomColor();
+    this.setup();
+    this.update();
+  }
+  setup() {
+    super.setup();
+    this.el.classList.add("drawable-string");
+    this.speak(this.text);
+  }
+  update() {
+    super.update();
+    this.el.style.color = this.color;
+    this.el.style.fontSize = this.fontSize;
+    this.el.style.fontFamily = app.options.fontFamily;
+    this.el.textContent = this.text;
+  }
+}
+
+const app = new MainApp();
+
+/*
+TODO preloading
+var img_to_load = [ '/img/1.jpg', '/img/2.jpg' ];
+var loaded_images = 0;
+
+for (var i=0; i<img_to_load.length; i++) {
+    var img = document.createElement('img');
+    img.src = img_to_load[i];
+    img.style.display = 'hidden'; // don't display preloaded images
+    img.onload = function () {
+        loaded_images ++;
+        if (loaded_images == img_to_load.length) {
+            alert('done loading images');
+        }
+        else {
+            alert((100*loaded_images/img_to_load.length) + '% loaded');
+        }
+    }
+    document.body.appendChild(img);
+}
+*/
+if (window.self === window.top) {
+  if (!("keyboard" in navigator)) {
+    alert(
+      "Your browser does not support the Keyboard Lock API. Try chrome or edge"
+    );
+  }
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+    <title>Baby Bam Bam</title>
+    <link href="style/app.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="imagepreload"></div>
+    <canvas id="canvas"></canvas>
+
+    <div id="help">
+      <kbd>ctrl</kbd> + <kbd>alt</kbd> + <kbd>shift</kbd> + <kbd>O</kbd> to show
+      options
+    </div>
+    <dialog id="optionsDialog">
+      <div id="logo">
+        <img src="assets/logo.svg" />
+        <div>
+          <h1>Baby</h1>
+          <h2>Bam <span>Bam</span></h2>
+        </div>
+      </div>
+
+      <p>
+        As babies smash on the keyboard, images, letters and numbers appear on
+        the screen. Try the many options and find the ones that are right for
+        your baby. Help and suggestions on
+        <a href="" target="_blank">Github</a>.
+      </p>
+      <h2>Options</h2>
+      <details>
+        <summary>Global</summary>
+        <p>
+          <label><input type="checkbox" name="fadeAway" /> Fade</label>
+          <label>after <input type="number" name="fadeAfter" />s</label>
+        </p>
+        <p>
+          <label
+            ><input type="checkbox" name="limitItems" />Limit objects</label
+          >
+          <label>to <input type="number" name="maxItems" /></label>
+        </p>
+        <p>
+          <label
+            ><input type="checkbox" name="animateOnClick" /> Animate on
+            click</label
+          >
+        </p>
+      </details>
+      <details>
+        <summary>Content</summary>
+        <p>
+          <label
+            ><input type="checkbox" name="forceUpperCase" /> Force letters to
+            UPPERCASE</label
+          >
+        </p>
+        <p>
+          <label
+            ><input type="checkbox" name="onlyAlphaNum" /> Only Letter and
+            Numbers</label
+          >
+        </p>
+        <p>
+          <label>
+            Font
+            <input type="text" name="fontFamily"
+          /></label>
+          <span class="hint"
+            >any name from
+            <a href="https://fonts.google.com/" target="_blank"
+              >Google Fonts</a
+            ></span
+          >
+        </p>
+        <p>
+          <label>
+            Letters behaviour
+            <select name="letterMode">
+              <option value="letter">letter</option>
+              <option value="image">image</option>
+            </select></label
+          >
+        </p>
+
+        <p>
+          <label>
+            Image collections
+            <span class="hint">(ctrl + click to select multiple)</span><br />
+            <select
+              id="imageCollections"
+              name="imageCollections"
+              multiple
+            ></select
+          ></label>
+        </p>
+      </details>
+      <details>
+        <summary>Drawing</summary>
+        <p>
+          <label
+            ><input type="checkbox" name="drawingEnabled" /> Drawing enabled
+          </label>
+        </p>
+        <p>
+          <label
+            ><input type="checkbox" name="clicklessDrawing" />Clickless mouse
+            drawing</label
+          >
+        </p>
+      </details>
+      <details>
+        <summary>Audio</summary>
+        <p>
+          <label
+            ><input type="checkbox" name="playAudio" /> Play audio clips</label
+          >
+        </p>
+        <p>
+          <label><input type="checkbox" name="ttsEnabled" /> Enable TTS </label
+          >,
+          <label
+            >lang override
+            <input type="text" name="ttsLang" placeholder="override default"
+          /></label>
+        </p>
+      </details>
+      <div class="actions">
+        <button id="optionsDialogClose" class="cta">Play</button>
+        <button id="fullscreenButton">Fullscreen</button>
+      </div>
+    </dialog>
+    <script src="js/app.js"></script>
+  </body>
+</html>

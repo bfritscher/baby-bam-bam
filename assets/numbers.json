@@ -1,0 +1,46 @@
+{
+  "name": "Numbers",
+  "attribution": "Designed by pikisuperstar / Freepik",
+  "images": [
+    {
+      "name": "0",
+      "src": "assets/numbers/0.svg"
+    },
+    {
+      "name": "1",
+      "src": "assets/numbers/1.svg"
+    },
+    {
+      "name": "2",
+      "src": "assets/numbers/2.svg"
+    },
+    {
+      "name": "3",
+      "src": "assets/numbers/3.svg"
+    },
+    {
+      "name": "4",
+      "src": "assets/numbers/4.svg"
+    },
+    {
+      "name": "5",
+      "src": "assets/numbers/5.svg"
+    },
+    {
+      "name": "6",
+      "src": "assets/numbers/6.svg"
+    },
+    {
+      "name": "7",
+      "src": "assets/numbers/7.svg"
+    },
+    {
+      "name": "8",
+      "src": "assets/numbers/8.svg"
+    },
+    {
+      "name": "9",
+      "src": "assets/numbers/9.svg"
+    }
+  ]
+}

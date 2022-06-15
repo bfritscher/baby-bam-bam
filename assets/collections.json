@@ -1,0 +1,14 @@
+{
+  "animal-alphabet-en": {
+    "name": "Animal Alphabet EN",
+    "url": "assets/animal-alphabet-en.json"
+  },
+  "numbers": {
+    "name": "Numbers",
+    "url": "assets/numbers.json"
+  },
+  "animals-en": {
+    "name": "Animals EN",
+    "url": "assets/animals-en.json"
+  }
+}

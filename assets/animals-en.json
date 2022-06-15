@@ -1,0 +1,15 @@
+{
+  "name": "Animals EN",
+  "lang": "en",
+  "images": [
+    {
+      "name": "fox",
+      "src": "assets/animals/fox-937635.jpg",
+      "audio": "assets/animals/cow.mp3"
+    },
+    {
+      "name": "giraf",
+      "src": "assets/animals/image-from-rawpixel-id-5915581-original.jpg"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "name": "Animal Alphabet EN",
+  "attribution": "Designed by Freepik",
+  "lang": "en",
+  "images": [
+    {
+      "name": "alligator",
+      "src": "assets/alphabet/a-alligator.svg"
+    },
+    {
+      "name": "bear",
+      "src": "assets/alphabet/b-bear.svg"
+    },
+    {
+      "name": "cow",
+      "src": "assets/alphabet/c-cow.svg"
+    },
+    {
+      "name": "duck",
+      "src": "assets/alphabet/d-duck.svg"
+    },
+    {
+      "name": "elephant",
+      "src": "assets/alphabet/e-elephant.svg"
+    },
+    {
+      "name": "fox",
+      "src": "assets/alphabet/f-fox.svg"
+    },
+    {
+      "name": "giraffe",
+      "src": "assets/alphabet/g-giraffe.svg"
+    },
+    {
+      "name": "horse",
+      "src": "assets/alphabet/h-horse.svg"
+    },
+    {
+      "name": "iguana",
+      "src": "assets/alphabet/i-iguana.svg"
+    },
+    {
+      "name": "jellyfish",
+      "src": "assets/alphabet/j-jellyfish.svg"
+    },
+    {
+      "name": "kangaroo",
+      "src": "assets/alphabet/k-kangaroo.svg"
+    },
+    {
+      "name": "lion",
+      "src": "assets/alphabet/l-lion.svg"
+    },
+    {
+      "name": "mouse",
+      "src": "assets/alphabet/m-mouse.svg"
+    },
+    {
+      "name": "northern cardinal",
+      "src": "assets/alphabet/n-northern-cardinal.svg"
+    },
+    {
+      "name": "owl",
+      "src": "assets/alphabet/o-owl.svg"
+    },
+    {
+      "name": "pig",
+      "src": "assets/alphabet/p-pig.svg"
+    },
+    {
+      "name": "quail",
+      "src": "assets/alphabet/q-quail.svg"
+    },
+    {
+      "name": "rabbit",
+      "src": "assets/alphabet/r-rabbit.svg"
+    },
+    {
+      "name": "sheep",
+      "src": "assets/alphabet/s-sheep.svg"
+    },
+    {
+      "name": "toucan",
+      "src": "assets/alphabet/t-toucan.svg"
+    },
+    {
+      "name": "unicorn",
+      "src": "assets/alphabet/u-unicorn.svg"
+    },
+    {
+      "name": "vulture",
+      "src": "assets/alphabet/v-vulture.svg"
+    },
+    {
+      "name": "whale",
+      "src": "assets/alphabet/w-whale.svg"
+    },
+    {
+      "name": "x-ray fish",
+      "src": "assets/alphabet/x-x-rayfish.svg"
+    },
+    {
+      "name": "yak",
+      "src": "assets/alphabet/y-yak.svg"
+    },
+    {
+      "name": "zebra",
+      "src": "assets/alphabet/z-zebra.svg"
+    }
+  ]
+}
