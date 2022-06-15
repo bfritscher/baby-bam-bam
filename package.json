@@ -1,7 +1,7 @@
 {
-  "name": "baby-keyboard-smash",
+  "name": "baby-bam-bam",
   "version": "1.0.0",
-  "description": "",
+  "description": "As babies smash on the keyboard, images, letters and numbers appear on the screen.",
   "main": "index.html",
   "scripts": {
     "start": "serve",
@@ -9,16 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/codesandbox-app/static-template.git"
+    "url": "git+https://github.com/bfritscher/baby-bam-bam.git"
   },
   "keywords": [],
-  "author": "Ives van Hoorne",
+  "author": "Boris Fritscher",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/codesandbox-app/static-template/issues"
+    "url": "https://github.com/bfritscher/baby-bam-bam/issues"
   },
-  "homepage": "https://github.com/codesandbox-app/static-template#readme",
+  "homepage": "https://bfritscher.github.io/baby-bam-bam/",
   "devDependencies": {
-    "serve": "^11.2.0"
+    "serve": "^13.0.2"
   }
 }
