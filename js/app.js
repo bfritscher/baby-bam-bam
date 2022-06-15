@@ -369,6 +369,8 @@ class Drawable {
     const { x, y } = randomWindowXY();
     this.x = x;
     this.y = y;
+    this.width = this.width * (Math.random() + 0.5);
+    this.height = this.width;
   }
   setup() {
     this.el = document.createElement("div");
