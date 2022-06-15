@@ -1,15 +1,59 @@
 {
-  "name": "Animals EN",
+  "name": "Animals with sound EN",
   "lang": "en",
   "images": [
     {
       "name": "fox",
-      "src": "assets/animals/fox-937635.jpg",
-      "audio": "assets/animals/cow.mp3"
+      "src": "assets/animals/fox-937635.png",
+      "audio": "assets/animals/fox.mp3",
+      "original": "https://pixabay.com/illustrations/fox-isolated-white-background-937635/"
     },
     {
-      "name": "giraf",
-      "src": "assets/animals/image-from-rawpixel-id-5915581-original.jpg"
+      "name": "fox",
+      "src": "assets/animals/fox-image-from-rawpixel-id-6208810.png",
+      "audio": "assets/animals/fox.mp3",
+      "attribution": "Image by rawpixel.com"
+    },
+    {
+      "name": "giraffe",
+      "src": "assets/animals/giraffe-image-from-rawpixel-id-5915581.png",
+      "attribution": "Image by rawpixel.com"
+    },
+    {
+      "name": "cow",
+      "src": "assets/animals/cow.png",
+      "audio": "assets/animals/cow.mp3",
+      "attribution": "tawatchai07 - www.freepik.com"
+    },
+    {
+      "name": "cat",
+      "src": "assets/animals/cat-image-from-rawpixel-id-6225308.png",
+      "audio": "assets/animals/cat.mp3",
+      "attribution": "Image by rawpixel.com"
+    },
+    {
+      "name": "dog",
+      "src": "assets/animals/dog-image-from-rawpixel-id-6117064.png",
+      "audio": "assets/animals/large-dog-bark-once-sound-effect.mp3",
+      "attribution": "Image by rawpixel.com"
+    },
+    {
+      "name": "polar bear",
+      "src": "assets/animals/polar-bear-image-from-rawpixel-id-6182512.png",
+      "audio": "assets/animals/polar-bear.mp3",
+      "attribution": "Image by rawpixel.com"
+    },
+    {
+      "name": "tiger",
+      "src": "assets/animals/tiger-image-from-rawpixel-id-6153767.png",
+      "audio": "assets/animals/tiger.mp3",
+      "attribution": "Image by rawpixel.com"
+    },
+    {
+      "name": "pig",
+      "src": "assets/animals/pig.png",
+      "audio": "assets/animals/pig.mp3",
+      "attribution": "www.freepik.com"
     }
   ]
 }
