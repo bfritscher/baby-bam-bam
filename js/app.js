@@ -28,6 +28,7 @@ class Options {
   limitItems = true;
   maxItems = 30; // count
   animateOnClick = true;
+  removeOnClick = false;
   forceUpperCase = true;
   fontFamily = "Roboto";
   letterMode = LETTER_MODE_IMAGE;
@@ -192,9 +193,8 @@ class CanasDraw {
     ctx.beginPath();
     ctx.lineWidth = this.options.drawingLineWidth;
     ctx.lineCap = "round";
-    ctx.strokeStyle = `hsl(${
-      ((new Date().getTime() - this.START_TIME) / 10) % 360
-    } 100% 50%)`;
+    ctx.strokeStyle = `hsl(${((new Date().getTime() - this.START_TIME) / 10) % 360
+      } 100% 50%)`;
     ctx.moveTo(this.coord.x, this.coord.y);
     this.reposition(event);
     ctx.lineTo(this.coord.x, this.coord.y);
@@ -377,18 +377,19 @@ class Drawable {
     document.body.append(this.el);
     if (app.options.fadeAway) {
       setTimeout(() => {
-        this.el.classList.add("fade-out");
-        setTimeout(() => {
-          this.destroy();
-        }, FADE_TIME_MS);
+        this.fadeOut();
       }, app.options.fadeAfter * 1000);
     }
     this.el.onclick = () => {
-      if (!app.options.animateOnClick) return;
-      this.el.classList.remove("jello");
-      setTimeout(() => {
-        this.el.classList.add("jello");
-      });
+      if (app.options.animateOnClick) {
+        this.el.classList.remove("jello");
+        setTimeout(() => {
+          this.el.classList.add("jello");
+        });
+      }
+      if (app.options.removeOnClick) {
+        this.fadeOut();
+      }
     };
   }
   update() {
@@ -412,6 +413,12 @@ class Drawable {
     }
     msg.text = text;
     window.speechSynthesis.speak(msg);
+  }
+  fadeOut() {
+    this.el.classList.add("fade-out");
+    setTimeout(() => {
+      this.destroy();
+    }, FADE_TIME_MS);
   }
   destroy() {
     this.el.remove();
