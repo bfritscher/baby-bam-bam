@@ -3,6 +3,10 @@
     "name": "Animal Alphabet EN",
     "url": "assets/animal-alphabet-en.json"
   },
+  "animal-alphabet-fr": {
+    "name": "Animaux Alphabet FR",
+    "url": "assets/animal-alphabet-fr.json"
+  },
   "numbers": {
     "name": "Numbers",
     "url": "assets/numbers.json"

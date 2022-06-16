@@ -1,0 +1,111 @@
+{
+  "name": "Animaux Alphabet FR",
+  "attribution": "Designed by Freepik",
+  "lang": "fr",
+  "images": [
+    {
+      "name": "alligator",
+      "src": "assets/alphabet/a-alligator.svg"
+    },
+    {
+      "name": "baleine",
+      "src": "assets/alphabet/b-baleine.svg"
+    },
+    {
+      "name": "cochon",
+      "src": "assets/alphabet/c-cochon.svg"
+    },
+    {
+      "name": "dauphin",
+      "src": "assets/alphabet/d-dauphin.svg"
+    },
+    {
+      "name": "elephant",
+      "src": "assets/alphabet/e-elephant.svg"
+    },
+    {
+      "name": "fourmi",
+      "src": "assets/alphabet/f-fourmi.svg"
+    },
+    {
+      "name": "girafe",
+      "src": "assets/alphabet/g-giraffe.svg"
+    },
+    {
+      "name": "hibou",
+      "src": "assets/alphabet/h-hibou.svg"
+    },
+    {
+      "name": "iguane",
+      "src": "assets/alphabet/i-iguana.svg"
+    },
+    {
+      "name": "jaguar",
+      "src": "assets/alphabet/j-jaguar.svg"
+    },
+    {
+      "name": "kangourou",
+      "src": "assets/alphabet/k-kangaroo.svg"
+    },
+    {
+      "name": "lion",
+      "src": "assets/alphabet/l-lion.svg"
+    },
+    {
+      "name": "mouton",
+      "src": "assets/alphabet/m-mouton.svg"
+    },
+    {
+      "name": "narval",
+      "src": "assets/alphabet/n-narval.svg"
+    },
+    {
+      "name": "ours",
+      "src": "assets/alphabet/o-ours.svg"
+    },
+    {
+      "name": "poule",
+      "src": "assets/alphabet/p-poule.svg"
+    },
+    {
+      "name": "quokka",
+      "src": "assets/alphabet/q-quokka.svg"
+    },
+    {
+      "name": "renard",
+      "src": "assets/alphabet/r-renard.svg"
+    },
+    {
+      "name": "souris",
+      "src": "assets/alphabet/s-souris.svg"
+    },
+    {
+      "name": "toucan",
+      "src": "assets/alphabet/t-toucan.svg"
+    },
+    {
+      "name": "unicorn",
+      "src": "assets/alphabet/u-unicorn.svg"
+    },
+    {
+      "name": "vautour",
+      "src": "assets/alphabet/v-vulture.svg"
+    },
+    {
+      "name": "wombat",
+      "src": "assets/alphabet/w-wombat.svg"
+    },
+    {
+      "name": "x-ray poisson",
+      "src": "assets/alphabet/x-x-rayfish.svg"
+    },
+    {
+      "name": "yak",
+      "src": "assets/alphabet/y-yak.svg"
+    },
+    {
+      "name": "zèbre",
+      "src": "assets/alphabet/z-zebra.svg"
+    }
+  ]
+}
