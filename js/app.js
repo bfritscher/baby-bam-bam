@@ -33,12 +33,12 @@ class Options {
   fontFamily = "Roboto";
   letterMode = LETTER_MODE_IMAGE;
   onlyAlphaNum = false;
-  imageCollections = ["animal-alphabet-en", "numbers"];
+  imageCollections = ["animal-alphabet-en", "numbers", "animals-en"];
   drawingEnabled = true;
   clicklessDrawing = false;
   drawingLineWidth = 30;
   playAudio = true;
-  ttsEnabled = true;
+  ttsEnabled = false;
   ttsLang = "";
   constructor() {
     this.load();
