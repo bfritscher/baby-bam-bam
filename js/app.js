@@ -143,7 +143,7 @@ class CanasDraw {
   START_TIME;
   canvas;
   ctx;
-  coord = { x: 0, y: 0 };
+  coords = {};
   options;
   refDraw;
 
@@ -155,6 +155,18 @@ class CanasDraw {
     // TODO: pointer events for touch support?
     this.canvas.addEventListener("mousedown", this.start.bind(this));
     this.canvas.addEventListener("mouseup", this.stop.bind(this));
+    this.canvas.addEventListener("touchstart", (event) => {
+      [...event.touches].forEach(touch => {
+        console.log(touch);
+        this.coords[touch.identifier] = this.reposition(touch);
+      });
+    })
+    this.canvas.addEventListener("touchmove", (event) => {
+      [...event.touches].forEach(touch => {
+        console.log(touch);
+        this.draw(touch);
+      });
+    });
     window.addEventListener("resize", this.resize.bind(this));
     this.resize();
     this.fadeOut();
@@ -167,8 +179,10 @@ class CanasDraw {
     this.ctx.canvas.height = window.innerHeight;
   }
   reposition(event) {
-    this.coord.x = event.clientX - this.canvas.offsetLeft;
-    this.coord.y = event.clientY - this.canvas.offsetTop;
+    return {
+      x: event.clientX - this.canvas.offsetLeft,
+      y: event.clientY - this.canvas.offsetTop
+    };
   }
 
   start(event) {
@@ -179,7 +193,7 @@ class CanasDraw {
       "mousemove",
       (this.refDraw = this.draw.bind(this))
     );
-    this.reposition(event);
+    this.coords[-1] = this.reposition(event);
   }
   stop() {
     if (!this.options.clicklessDrawing) {
@@ -189,16 +203,18 @@ class CanasDraw {
   // TODO alternative? save points and redraw with fade
   draw(event) {
     if (!this.options.drawingEnabled) return;
+    const id = event.identifier !== undefined ? event.identifier : -1;
     const ctx = this.ctx;
     ctx.beginPath();
     ctx.lineWidth = this.options.drawingLineWidth;
     ctx.lineCap = "round";
     ctx.strokeStyle = `hsl(${((new Date().getTime() - this.START_TIME) / 10) % 360
       } 100% 50%)`;
-    ctx.moveTo(this.coord.x, this.coord.y);
-    this.reposition(event);
-    ctx.lineTo(this.coord.x, this.coord.y);
+    ctx.moveTo(this.coords[id].x, this.coords[id].y);
+    this.coords[id] = this.reposition(event);
+    ctx.lineTo(this.coords[id].x, this.coords[id].y);
     ctx.stroke();
+    ctx.closePath();
   }
 
   fadeOut() {

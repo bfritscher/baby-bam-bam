@@ -27,8 +27,7 @@ https://bfritscher.github.io/baby-bam-bam/
 
 Some future ideas to be discussed in Issues
 
-- [ ] Touch draw
-- [ ] Handle options screen on mobile?
+- [ ] Handle options screen on mobile? Better touch UX
 - [ ] Optimise images / create more assets
 - [ ] Test message sync and multi window api for multiscreen display https://web.dev/multi-screen-window-placement/
 - [ ] preload image and sounds with progressbar
