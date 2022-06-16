@@ -208,6 +208,9 @@ class CanasDraw {
     ctx.lineCap = "round";
     ctx.strokeStyle = `hsl(${((new Date().getTime() - this.START_TIME) / 10) % 360
       } 100% 50%)`;
+    if (!this.coords[id]) {
+      this.coords[id] = this.reposition(event);
+    }
     ctx.moveTo(this.coords[id].x, this.coords[id].y);
     this.coords[id] = this.reposition(event);
     ctx.lineTo(this.coords[id].x, this.coords[id].y);
@@ -321,7 +324,7 @@ class MainApp {
           this.lastTaps[id] = 0;
         }
       });
-      event.preventDefault();
+      if (event.cancelable) event.preventDefault();
     });
     if (navigator.userAgentData.mobile) {
       document.getElementById("help").style.display = "none";
