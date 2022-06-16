@@ -7,23 +7,38 @@ harder to accidently exit the program.
 
 No dependencies (outside of Google Fonts) only vanilla html/css/javascript.
 
+## Demo
+https://bfritscher.github.io/baby-bam-bam/
+
+## Preview
+
+### Options
+![](docs/preview.png)
+
+### Drawing
+![](docs/preview2.png)
+
 ## Inspired by
 
 - https://github.com/porridge/bambam
 - https://github.com/shanselman/babysmash
 
-**nice to have**
-[ ] Touch draw
-[ ] Handle options screen on mobile?
-[ ] Optimise images / create more assets
-[ ] Test message sync and multi window api for multiscreen display https://web.dev/multi-screen-window-placement/
-[ ] preload image and sounds with progressbar
-[ ] check performance of draw refresh clear
-[ ] special keys filter not only alphanum to allow for = + - ...
+## Nice to have ##
+
+Some future ideas to be discussed in Issues
+
+- [ ] Touch draw
+- [ ] Handle options screen on mobile?
+- [ ] Optimise images / create more assets
+- [ ] Test message sync and multi window api for multiscreen display https://web.dev/multi-screen-window-placement/
+- [ ] preload image and sounds with progressbar
+- [ ] check performance of draw refresh clear
+- [ ] special keys filter not only alphanum to allow for = + - ...
 
 ## Content Sources
 
 - https://freeanimalsounds.org/
 - https://www.freesoundslibrary.com/
 - https://freepik.com
+- https://www.rawpixel.com/
 - Logo Icon adapted from Simon Mettler from [the Noun Project](https://thenounproject.com/)
