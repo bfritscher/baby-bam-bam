@@ -287,7 +287,27 @@ class MainApp {
       },
       false
     );
+    let longpress;
+    document.addEventListener("touchstart", (event) => {
+      if (longpress) return;
+      longpress = setTimeout(() => {
+        longpress = null;
+        if (!this.optionsDialog.dialog.open) {
+          this.optionsDialog.show();
+        }
+      }, 3000)
+    })
+    document.addEventListener("touchmove", (event) => {
+      if (longpress) {
+        clearTimeout(longpress);
+        longpress = null;
+      }
+    });
     document.addEventListener("touchend", (event) => {
+      if (longpress) {
+        clearTimeout(longpress);
+        longpress = null;
+      }
       if (this.optionsDialog.dialog.open) return;
       // double tap detection
       const currentTime = new Date().getTime();
@@ -297,10 +317,15 @@ class MainApp {
         this.lastTaps[id] = currentTime;
         if (deltaTap > 0 && deltaTap < 500) {
           this.addDrawable(new ImageDrawable(randomItem(this.images)));
-          touch.preventDefault();
+          this.lastTaps[id] = 0;
         }
       });
-    })
+      event.preventDefault();
+    });
+    if (navigator.userAgentData.mobile) {
+      document.getElementById("help").style.display = "none";
+      document.getElementById("help-mobile").style.display = "block";
+    }
   }
   loadCollectionsIndex() {
     fetch("assets/collections.json")

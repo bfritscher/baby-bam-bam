@@ -41,11 +41,9 @@ dialog {
   border-radius: calc(5px * var(--ratio));
   box-shadow: 0 0 #0000, 0 0 #0000, 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   padding: 1.6rem;
-  min-width: 600px;
   max-width: 800px;
   user-select: none;
 }
-
 summary {
   cursor: pointer;
 }
@@ -115,7 +113,7 @@ kbd {
   background-repeat: no-repeat;
 }
 
-#help {
+.help {
   position: absolute;
   top: 0;
   left: 0;
@@ -123,6 +121,9 @@ kbd {
   color: #888;
   font-size: 80%;
   padding: 4px;
+}
+#help-mobile {
+  display: none;
 }
 
 #imagepreload {
@@ -140,11 +141,13 @@ kbd {
 #logo {
   display: flex;
   margin: auto;
-  width: 400px;
+  width: 80vw;
+  max-width: 400px;
   margin-bottom: 1em;
 }
 #logo img {
-  width: 150px;
+  width: 30vw;
+  max-width: 150px;
   padding-right: 20px;
 }
 
