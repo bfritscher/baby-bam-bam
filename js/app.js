@@ -234,6 +234,7 @@ class MainApp {
   lastTaps = {};
 
   constructor() {
+    window.addEventListener("contextmenu", e => e.preventDefault());
     this.options = new Options();
     this.optionsDialog = new OptionsDialog(this.options);
     setTimeout(() => {
