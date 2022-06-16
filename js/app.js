@@ -157,13 +157,11 @@ class CanasDraw {
     this.canvas.addEventListener("mouseup", this.stop.bind(this));
     this.canvas.addEventListener("touchstart", (event) => {
       [...event.touches].forEach(touch => {
-        console.log(touch);
         this.coords[touch.identifier] = this.reposition(touch);
       });
     })
     this.canvas.addEventListener("touchmove", (event) => {
       [...event.touches].forEach(touch => {
-        console.log(touch);
         this.draw(touch);
       });
     });
@@ -233,6 +231,7 @@ class MainApp {
   images = [];
   audios = [];
   collections = {};
+  lastTaps = {};
 
   constructor() {
     this.options = new Options();
@@ -288,6 +287,20 @@ class MainApp {
       },
       false
     );
+    document.addEventListener("touchend", (event) => {
+      if (this.optionsDialog.dialog.open) return;
+      // double tap detection
+      const currentTime = new Date().getTime();
+      [...event.changedTouches].forEach((touch) => {
+        const id = touch.identifier;
+        const deltaTap = currentTime - this.lastTaps[id];
+        this.lastTaps[id] = currentTime;
+        if (deltaTap > 0 && deltaTap < 500) {
+          this.addDrawable(new ImageDrawable(randomItem(this.images)));
+          touch.preventDefault();
+        }
+      });
+    })
   }
   loadCollectionsIndex() {
     fetch("assets/collections.json")
