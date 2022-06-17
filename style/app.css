@@ -44,6 +44,7 @@ dialog {
   max-width: 800px;
   user-select: none;
 }
+
 summary {
   cursor: pointer;
 }
@@ -104,6 +105,21 @@ kbd {
   font-size: 80%;
 }
 
+#externalCollections {
+  margin: 0;
+}
+
+#externalCollections li,
+#externalCollections li input {
+  color: #888;
+  font-style: italic;
+  font-size: 80%;
+}
+
+#externalCollections li span {
+  color: #d40000;
+}
+
 .drawable {
   position: absolute;
 }
@@ -122,6 +138,7 @@ kbd {
   font-size: 80%;
   padding: 4px;
 }
+
 #help-mobile {
   display: none;
 }
@@ -145,6 +162,7 @@ kbd {
   max-width: 400px;
   margin-bottom: 1em;
 }
+
 #logo img {
   width: 30vw;
   max-width: 150px;
@@ -156,11 +174,13 @@ kbd {
   font-size: 48pt;
   line-height: 48pt;
 }
+
 #logo h2 {
   color: #d40000;
   line-height: 28pt;
   font-size: 28pt;
 }
+
 #logo h2 span {
   color: #ffd42a;
 }
@@ -206,6 +226,7 @@ kbd {
 }
 
 @keyframes jello {
+
   from,
   11.1%,
   to {

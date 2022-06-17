@@ -12,7 +12,7 @@ function randomColor() {
 function randomWindowXY() {
   return {
     x: Math.floor(Math.random() * window.innerWidth),
-    y: Math.floor(Math.random() * window.innerHeight)
+    y: Math.floor(Math.random() * window.innerHeight),
   };
 }
 
@@ -34,6 +34,7 @@ class Options {
   letterMode = LETTER_MODE_IMAGE;
   onlyAlphaNum = false;
   imageCollections = ["animal-alphabet-en", "numbers", "animals-en"];
+  externalCollections = [];
   drawingEnabled = true;
   clicklessDrawing = false;
   drawingLineWidth = 30;
@@ -55,7 +56,7 @@ class Options {
         }
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
   save() {
@@ -111,6 +112,41 @@ class OptionsDialog {
         });
       }
     });
+    const externalCollectionsList = document.getElementById(
+      "externalCollections"
+    );
+    const externalCollectionAdd = document.getElementById(
+      "externalCollectionAdd"
+    );
+
+    function createExternalCollectionItem(collectionsUrl) {
+      const li = document.createElement("li");
+      li.innerText = collectionsUrl;
+      const removeButton = document.createElement("input");
+      removeButton.type = "button";
+      removeButton.value = "remove";
+      removeButton.addEventListener("click", () => {
+        options.externalCollections.splice(
+          options.externalCollections.indexOf(collectionsUrl),
+          1
+        );
+        options.save();
+        li.remove();
+        app.loadCollectionsIndex();
+      });
+      li.append(removeButton);
+      externalCollectionsList.append(li);
+    }
+    externalCollectionAdd.addEventListener("click", () => {
+      const url = prompt("URL of external collections.json file", "");
+      if (url) {
+        options.externalCollections.push(url);
+        options.save();
+        createExternalCollectionItem(url);
+        app.loadCollectionsIndex();
+      }
+    });
+    options.externalCollections.forEach(createExternalCollectionItem);
     const optionsDialogClose = document.getElementById("optionsDialogClose");
     optionsDialogClose.addEventListener("click", () => this.close());
     const fullscreenButton = document.getElementById("fullscreenButton");
@@ -130,6 +166,7 @@ class OptionsDialog {
     e.preventDefault();
   }
   show() {
+    if (this.dialog.open) return;
     this.dialog.addEventListener("cancel", this._captureEsc);
     this.dialog.showModal();
   }
@@ -156,12 +193,12 @@ class CanasDraw {
     this.canvas.addEventListener("mousedown", this.start.bind(this));
     this.canvas.addEventListener("mouseup", this.stop.bind(this));
     this.canvas.addEventListener("touchstart", (event) => {
-      [...event.touches].forEach(touch => {
+      [...event.touches].forEach((touch) => {
         this.coords[touch.identifier] = this.reposition(touch);
       });
-    })
+    });
     this.canvas.addEventListener("touchmove", (event) => {
-      [...event.touches].forEach(touch => {
+      [...event.touches].forEach((touch) => {
         this.draw(touch);
       });
     });
@@ -179,7 +216,7 @@ class CanasDraw {
   reposition(event) {
     return {
       x: event.clientX - this.canvas.offsetLeft,
-      y: event.clientY - this.canvas.offsetTop
+      y: event.clientY - this.canvas.offsetTop,
     };
   }
 
@@ -206,8 +243,9 @@ class CanasDraw {
     ctx.beginPath();
     ctx.lineWidth = this.options.drawingLineWidth;
     ctx.lineCap = "round";
-    ctx.strokeStyle = `hsl(${((new Date().getTime() - this.START_TIME) / 10) % 360
-      } 100% 50%)`;
+    ctx.strokeStyle = `hsl(${
+      ((new Date().getTime() - this.START_TIME) / 10) % 360
+    } 100% 50%)`;
     if (!this.coords[id]) {
       this.coords[id] = this.reposition(event);
     }
@@ -237,7 +275,7 @@ class MainApp {
   lastTaps = {};
 
   constructor() {
-    window.addEventListener("contextmenu", e => e.preventDefault());
+    window.addEventListener("contextmenu", (e) => e.preventDefault());
     this.options = new Options();
     this.optionsDialog = new OptionsDialog(this.options);
     setTimeout(() => {
@@ -283,7 +321,6 @@ class MainApp {
             return;
           }
           if (list.length > 0) {
-            console.log("keyboard", event);
             this.addDrawable(new ImageDrawable(randomItem(list)));
           } else {
             this.addDrawable(new StringDrawable("No Images"));
@@ -300,8 +337,8 @@ class MainApp {
         if (!this.optionsDialog.dialog.open) {
           this.optionsDialog.show();
         }
-      }, 3000)
-    })
+      }, 3000);
+    });
     document.addEventListener("touchmove", (event) => {
       if (longpress) {
         clearTimeout(longpress);
@@ -309,7 +346,6 @@ class MainApp {
       }
     });
     document.addEventListener("touchend", (event) => {
-      console.log("touch", event);
       if (longpress) {
         clearTimeout(longpress);
         longpress = null;
@@ -333,14 +369,31 @@ class MainApp {
       document.getElementById("help-mobile").style.display = "block";
     }
   }
-  loadCollectionsIndex() {
-    fetch("assets/collections.json")
-      .then((r) => r.json())
-      .then((data) => {
-        this.collections = data;
-        this.setupCollections();
-        this.optionsDialog.show();
-      });
+  async loadCollectionsIndex() {
+    const collections = ["assets/collections.json"].concat(
+      ...this.options.externalCollections
+    );
+    for (const collection of collections) {
+      await fetch(collection, {
+        mode: "cors",
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          Object.assign(this.collections, data);
+        })
+        .catch((e) => {
+          const span = document.createElement("span");
+          span.innerText = `Error loading: ${e}`;
+          document
+            .getElementById("externalCollections")
+            .children[
+              this.options.externalCollections.indexOf(collection)
+            ].append(span);
+          console.error(e);
+        });
+    }
+    this.setupCollections();
+    this.optionsDialog.show();
   }
 
   addDrawable(drawable) {
@@ -391,7 +444,7 @@ class MainApp {
         });
       })
       .catch(() => {
-        console.log("Unable to load collection:", collectionRef);
+        console.error("Unable to load collection:", collectionRef);
       });
   }
   async toggleFullscreen() {
@@ -578,7 +631,6 @@ if (window.self === window.top) {
 
 /* Disable back navigation */
 history.pushState(null, document.title, location.href);
-window.addEventListener('popstate', function (event)
-{
+window.addEventListener("popstate", function (event) {
   history.pushState(null, document.title, location.href);
 });
