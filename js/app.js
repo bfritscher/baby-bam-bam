@@ -118,7 +118,7 @@ class OptionsDialog {
       app.toggleFullscreen();
       fullscreenButton.textContent = document.fullscreen
         ? "Fullscreen"
-        : "EXIT";
+        : "Exit";
     });
     // If a browser doesn't support the dialog, then hide the
     // dialog contents by default.
@@ -283,6 +283,7 @@ class MainApp {
             return;
           }
           if (list.length > 0) {
+            console.log("keyboard", event);
             this.addDrawable(new ImageDrawable(randomItem(list)));
           } else {
             this.addDrawable(new StringDrawable("No Images"));
@@ -308,6 +309,7 @@ class MainApp {
       }
     });
     document.addEventListener("touchend", (event) => {
+      console.log("touch", event);
       if (longpress) {
         clearTimeout(longpress);
         longpress = null;
@@ -573,3 +575,10 @@ if (window.self === window.top) {
     );
   }
 }
+
+/* Disable back navigation */
+history.pushState(null, document.title, location.href);
+window.addEventListener('popstate', function (event)
+{
+  history.pushState(null, document.title, location.href);
+});
