@@ -33,6 +33,7 @@ class Options {
   fontFamily = "Roboto";
   letterMode = LETTER_MODE_IMAGE;
   onlyAlphaNum = false;
+  emptyBeforeRepeat = false;
   imageCollections = ["animal-alphabet-en", "numbers", "animals-en"];
   externalCollections = [];
   drawingEnabled = true;
@@ -270,6 +271,7 @@ class MainApp {
   canvas;
   drawables = [];
   images = [];
+  availableImages = [];
   audios = [];
   collections = {};
   lastTaps = {};
@@ -305,15 +307,34 @@ class MainApp {
             : event.key;
           this.addDrawable(new StringDrawable(text));
         } else {
-          let list = this.images;
+          if (this.availableImages.length === 0) {
+            // repopulate pool of available images
+            this.availableImages = this.images.slice();
+          }
+          let list = this.options.emptyBeforeRepeat
+            ? this.availableImages
+            : this.images;
+
           if (
             this.options.letterMode === LETTER_MODE_IMAGE &&
             event.key.match(ALPHANUM)
           ) {
             // try to find an image starting with letter
-            const candidates = this.images.filter(
+            const candidates = list.filter(
               (img) => img.name.toUpperCase()[0] === event.key.toUpperCase()
             );
+            if (candidates.length === 0 && this.options.emptyBeforeRepeat) {
+              const candidates2 = this.images.filter(
+                (img) => img.name.toUpperCase()[0] === event.key.toUpperCase()
+              );
+              if (candidates2.length > 0) {
+                // repopulate pool
+                this.availableImages = this.availableImages.concat(
+                  ...candidates2
+                );
+                list = candidates2;
+              }
+            }
             if (candidates.length > 0) {
               list = candidates;
             }
@@ -321,7 +342,9 @@ class MainApp {
             return;
           }
           if (list.length > 0) {
-            this.addDrawable(new ImageDrawable(randomItem(list)));
+            const img = randomItem(list);
+            this.availableImages.splice(this.availableImages.indexOf(img), 1);
+            this.addDrawable(new ImageDrawable(img));
           } else {
             this.addDrawable(new StringDrawable("No Images"));
           }
@@ -358,7 +381,17 @@ class MainApp {
         const deltaTap = currentTime - this.lastTaps[id];
         this.lastTaps[id] = currentTime;
         if (deltaTap > 0 && deltaTap < 500) {
-          this.addDrawable(new ImageDrawable(randomItem(this.images)));
+          // TODO refactor to function with keyboard version
+          if (this.availableImages.length === 0) {
+            // repopulate pool of available images
+            this.availableImages = this.images.slice();
+          }
+          let list = this.options.emptyBeforeRepeat
+            ? this.availableImages
+            : this.images;
+          const img = randomItem(list);
+          this.availableImages.splice(this.availableImages.indexOf(img), 1);
+          this.addDrawable(new ImageDrawable(img));
           this.lastTaps[id] = 0;
         }
       });
@@ -407,6 +440,7 @@ class MainApp {
   }
   setupCollections() {
     this.images = [];
+    this.availableImages = [];
     const imageCollectionsEl = document.getElementById("imageCollections");
     let child = imageCollectionsEl.lastElementChild;
     while (child) {
