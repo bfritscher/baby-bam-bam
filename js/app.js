@@ -27,6 +27,7 @@ class Options {
   fadeAfter = 3; // seconds
   limitItems = true;
   maxItems = 30; // count
+  throttleMS = 500;
   animateOnClick = true;
   removeOnClick = false;
   lockCursor = false;
@@ -287,6 +288,7 @@ class MainApp {
   audios = [];
   collections = {};
   lastTaps = {};
+  lastAddedTime = 0;
 
   constructor() {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -300,9 +302,10 @@ class MainApp {
     document.addEventListener(
       "keydown",
       (event) => {
+        if (this.optionsDialog.dialog.open) return;
         event.preventDefault();
         event.stopPropagation();
-        if (event.repeat || this.optionsDialog.dialog.open) return;
+        if (event.repeat) return;
         if (
           event.ctrlKey &&
           event.shiftKey &&
@@ -312,6 +315,9 @@ class MainApp {
           this.optionsDialog.show();
           return;
         }
+
+        if (new Date().getTime() - this.lastAddedTime < this.options.throttleMS) return;
+
         if (
           this.options.letterMode === LETTER_MODE_LETTER &&
           event.key.match(ALPHANUM)
@@ -444,6 +450,7 @@ class MainApp {
   }
 
   addDrawable(drawable) {
+    this.lastAddedTime =  new Date().getTime();
     this.drawables.push(drawable);
     if (
       this.options.limitItems &&
