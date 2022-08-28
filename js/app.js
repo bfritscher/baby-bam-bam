@@ -613,10 +613,11 @@ class ImageDrawable extends Drawable {
     this.el.style.backgroundImage = `url(${this.image.src})`;
   }
   destroy() {
-    super.destroy();
     if (this.audio) {
+      this.audio.pause();
       delete this.audio;
     }
+    super.destroy();
   }
 }
 
