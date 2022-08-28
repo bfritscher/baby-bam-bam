@@ -289,6 +289,8 @@ class MainApp {
   collections = {};
   lastTaps = {};
   lastAddedTime = 0;
+  loaded = 0;
+  toLoadTotal = 0;
 
   constructor() {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -316,7 +318,8 @@ class MainApp {
           return;
         }
 
-        if (new Date().getTime() - this.lastAddedTime < this.options.throttleMS) return;
+        if (new Date().getTime() - this.lastAddedTime < this.options.throttleMS)
+          return;
 
         if (
           this.options.letterMode === LETTER_MODE_LETTER &&
@@ -450,7 +453,7 @@ class MainApp {
   }
 
   addDrawable(drawable) {
-    this.lastAddedTime =  new Date().getTime();
+    this.lastAddedTime = new Date().getTime();
     this.drawables.push(drawable);
     if (
       this.options.limitItems &&
@@ -462,8 +465,11 @@ class MainApp {
   setupCollections() {
     this.images = [];
     this.availableImages = [];
+    this.loaded = 0;
+    this.toLoadTotal = 0;
     const imageCollectionsEl = document.getElementById("imageCollections");
     let child = imageCollectionsEl.lastElementChild;
+    document.getElementById("preloadProgress").style.display = "block";
     while (child) {
       imageCollectionsEl.removeChild(child);
       child = imageCollectionsEl.lastElementChild;
@@ -481,6 +487,20 @@ class MainApp {
       }
     });
   }
+
+  addLoaded() {
+    this.loaded++;
+    document.getElementById("preloadDone").innerText = this.loaded;
+    if (this.toLoadTotal > 0) {
+      document.getElementById("preloadProgressBar").style.width = `${
+        (this.loaded / this.toLoadTotal) * 100
+      }%`;
+    }
+    if (this.toLoadTotal === this.loaded) {
+      document.getElementById("preloadProgress").style.display = "none";
+    }
+  }
+
   setupCollection(collectionRef) {
     fetch(collectionRef.url)
       .then((r) => r.json())
@@ -490,16 +510,24 @@ class MainApp {
           const img = document.createElement("img");
           img.src = o.src;
           img.setAttribute("name", o.name);
+          img.onload = () => {
+            this.addLoaded();
+          };
           imagepreload.append(img);
           if (o.audio) {
             o.audioObj = new Audio(o.audio);
-            //TODO preload wait audioElement.addEventListener('loadeddata', () => {
+            o.audioObj.addEventListener("loadeddata", () => {
+              this.addLoaded();
+            });
+            this.toLoadTotal++;
           }
           this.images.push(o);
+          this.toLoadTotal++;
+          document.getElementById("preloadTotal").innerText = this.toLoadTotal;
         });
       })
-      .catch(() => {
-        console.error("Unable to load collection:", collectionRef);
+      .catch((e) => {
+        console.error("Unable to load collection:", collectionRef, e);
       });
   }
   async toggleFullscreen() {
@@ -656,27 +684,6 @@ class StringDrawable extends Drawable {
 
 const app = new MainApp();
 
-/*
-TODO preloading
-var img_to_load = [ '/img/1.jpg', '/img/2.jpg' ];
-var loaded_images = 0;
-
-for (var i=0; i<img_to_load.length; i++) {
-    var img = document.createElement('img');
-    img.src = img_to_load[i];
-    img.style.display = 'hidden'; // don't display preloaded images
-    img.onload = function () {
-        loaded_images ++;
-        if (loaded_images == img_to_load.length) {
-            alert('done loading images');
-        }
-        else {
-            alert((100*loaded_images/img_to_load.length) + '% loaded');
-        }
-    }
-    document.body.appendChild(img);
-}
-*/
 if (window.self === window.top) {
   if (!("keyboard" in navigator)) {
     alert(
