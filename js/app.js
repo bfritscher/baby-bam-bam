@@ -29,6 +29,7 @@ class Options {
   maxItems = 30; // count
   animateOnClick = true;
   removeOnClick = false;
+  lockCursor = false;
   forceUpperCase = true;
   fontFamily = "Roboto";
   letterMode = LETTER_MODE_IMAGE;
@@ -76,8 +77,10 @@ class Options {
 
 class OptionsDialog {
   dialog;
+  options;
   formElements = {};
   constructor(options) {
+    this.options = options;
     this.dialog = document.getElementById("optionsDialog");
     // connect dom
     [...this.dialog.querySelectorAll("[name]")].forEach((formEl) => {
@@ -170,10 +173,18 @@ class OptionsDialog {
     if (this.dialog.open) return;
     this.dialog.addEventListener("cancel", this._captureEsc);
     this.dialog.showModal();
+    if (this.options.lockCursor) {
+      document.exitPointerLock();
+    }
   }
   close() {
     this.dialog.close();
     this.dialog.removeEventListener("cancel", this._captureEsc);
+    if (this.options.lockCursor) {
+      document.getElementById("canvas").requestPointerLock();
+    }
+
+    // TODO fix drawing with pointerlock    console.log( event.movementX, event.movementY);
   }
 }
 
@@ -215,6 +226,7 @@ class CanasDraw {
     this.ctx.canvas.height = window.innerHeight;
   }
   reposition(event) {
+    if (!event) return { x: 0, y: 0 };
     return {
       x: event.clientX - this.canvas.offsetLeft,
       y: event.clientY - this.canvas.offsetTop,
@@ -288,6 +300,8 @@ class MainApp {
     document.addEventListener(
       "keydown",
       (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         if (event.repeat || this.optionsDialog.dialog.open) return;
         if (
           event.ctrlKey &&
@@ -487,7 +501,7 @@ class MainApp {
       return;
     }
     try {
-      if (!document.fullscreen) {
+      if (document.fullscreenElement === null) {
         await document.documentElement.requestFullscreen();
         if ("keyboard" in navigator) {
           await navigator.keyboard.lock();

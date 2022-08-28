@@ -26,7 +26,7 @@ https://bfritscher.github.io/baby-bam-bam/
 ## Nice to have ##
 
 Some future ideas to be discussed in Issues
-
+- [ ] Fix drawing with pointerlock
 - [ ] Optimise images / create more assets
 - [ ] Test message sync and multi window api for multiscreen display https://web.dev/multi-screen-window-placement/
 - [ ] preload image and sounds with progressbar
