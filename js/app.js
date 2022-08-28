@@ -524,6 +524,10 @@ class MainApp {
           this.images.push(o);
           this.toLoadTotal++;
           document.getElementById("preloadTotal").innerText = this.toLoadTotal;
+          document.getElementById("imagesCount").innerText = this.images.length;
+          document.getElementById("audioCount").innerText = this.images.filter(
+            (i) => i.audio
+          ).length;
         });
       })
       .catch((e) => {
