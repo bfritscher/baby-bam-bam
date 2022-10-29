@@ -1,6 +1,10 @@
 const COLORS = ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"];
 const FADE_TIME_MS = 2000; // must match .fade-out
 
+if (typeof navigator.serviceWorker !== "undefined") {
+  navigator.serviceWorker.register("service-worker.js");
+}
+
 function randomItem(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
@@ -422,6 +426,9 @@ class MainApp {
     });
     if (navigator.userAgentData.mobile) {
       document.getElementById("help").style.display = "none";
+      document.getElementById("help-mobile").style.display = "block";
+    }
+    if ("ontouchstart" in document.documentElement) {
       document.getElementById("help-mobile").style.display = "block";
     }
   }

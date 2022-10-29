@@ -19,6 +19,6 @@
   },
   "homepage": "https://bfritscher.github.io/baby-bam-bam/",
   "devDependencies": {
-    "serve": "^13.0.2"
+    "serve": "^14.0.1"
   }
 }
