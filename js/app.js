@@ -2,7 +2,7 @@ const COLORS = ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"];
 const FADE_TIME_MS = 2000; // must match .fade-out
 
 if (typeof navigator.serviceWorker !== "undefined") {
-  navigator.serviceWorker.register("service-worker.js");
+  navigator.serviceWorker.register("./service-worker.js", {scope: '../'});
 }
 
 function randomItem(list) {
