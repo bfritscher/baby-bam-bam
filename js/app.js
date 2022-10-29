@@ -2,7 +2,7 @@ const COLORS = ["#ff5994", "#ff9668", "#edff8f", "#84ff9f", "#82b6ff"];
 const FADE_TIME_MS = 2000; // must match .fade-out
 
 if (typeof navigator.serviceWorker !== "undefined") {
-  navigator.serviceWorker.register("./service-worker.js", {scope: '../'});
+  navigator.serviceWorker.register("./service-worker.js", { scope: "../" });
 }
 
 function randomItem(list) {
@@ -418,14 +418,16 @@ class MainApp {
             : this.images;
           const img = randomItem(list);
           this.availableImages.splice(this.availableImages.indexOf(img), 1);
-          this.addDrawable(new ImageDrawable(img));
+          this.addDrawable(
+            new ImageDrawable(img, { x: touch.clientX, y: touch.clientY })
+          );
           this.lastTaps[id] = 0;
         }
       });
       if (event.cancelable) event.preventDefault();
     });
     if (navigator.userAgentData.mobile) {
-      document.getElementById("help").style.display = "none";
+      document.getElementById("help-desktop").style.display = "none";
       document.getElementById("help-mobile").style.display = "block";
     }
     if ("ontouchstart" in document.documentElement) {
@@ -572,8 +574,7 @@ class Drawable {
   y = 0;
   width = 200;
   height = 200;
-  constructor() {
-    const { x, y } = randomWindowXY();
+  constructor({ x, y } = randomWindowXY()) {
     this.x = x;
     this.y = y;
     this.width = this.width * (Math.random() + 0.5);
@@ -589,7 +590,7 @@ class Drawable {
         this.fadeOut();
       }, app.options.fadeAfter * 1000);
     }
-    this.el.onclick = () => {
+    this.el.onpointerdown = () => {
       if (app.options.animateOnClick) {
         this.el.classList.remove("jello");
         setTimeout(() => {
@@ -606,12 +607,12 @@ class Drawable {
     this.el.style.height = `${this.height}px`;
     // padding width
     this.el.style.left = `${Math.min(
-      this.x,
-      window.innerWidth - this.width
+      this.x - (this.width / 2),
+      window.innerWidth - (this.width / 2)
     )}px`;
     this.el.style.top = `${Math.min(
-      this.y,
-      window.innerHeight - this.height
+      this.y - (this.height / 2),
+      window.innerHeight - (this.height / 2)
     )}px`;
   }
   speak(text) {
@@ -637,8 +638,8 @@ class Drawable {
 class ImageDrawable extends Drawable {
   image;
   audio;
-  constructor(image) {
-    super();
+  constructor(image, { x, y } = randomWindowXY()) {
+    super({ x, y });
     this.image = image;
     this.setup();
     this.update();
